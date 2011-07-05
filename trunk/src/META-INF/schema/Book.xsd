@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/Book"
+	xmlns:tns="http://www.example.org/Book" elementFormDefault="qualified">
+
+	<element name="Book">
+		<complexType>
+			<sequence>
+				<element name="Title" type="tns:titleType" minOccurs="1"
+					maxOccurs="1" />
+				<element name="Author" type="tns:authorType" minOccurs="1"
+					maxOccurs="20" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<simpleType name="authorType">
+		<restriction base="string">
+			<minLength value="3" />
+			<maxLength value="200" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="titleType">
+		<restriction base="string">
+			<maxLength value="200" />
+		</restriction>
+	</simpleType>
+
+
+</schema>

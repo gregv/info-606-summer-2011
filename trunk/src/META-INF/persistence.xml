@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="myem" transaction-type="RESOURCE_LOCAL">
+
+		<class>org.info606.jpa.entity.Table1</class>
+		<class>org.info606.jpa.entity.MyXML</class>
+
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />
+			<property name="javax.persistence.jdbc.user" value="greg" />
+			<property name="javax.persistence.jdbc.password" value="PASS" />
+			<property name="eclipselink.profiler" value="PerformanceProfiler" />
+			<property name="eclipselink.logging.level" value="FINE" />
+		</properties>
+
+	</persistence-unit>
+</persistence>
