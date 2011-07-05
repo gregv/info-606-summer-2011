@@ -1,0 +1,25 @@
+<books>
+	<book title="book1">
+		<authors>
+			<author>
+				<firstname>Bob</firstname>
+				<lastname>Bobber</lastname>
+			</author>
+			<author>
+				<firstname>Ted</firstname>
+				<lastname>Tedder</lastname>
+			</author>
+		</authors>
+		<description>This is a discription of book 1</description>
+	</book>
+
+	<book title="book2">
+		<authors>
+			<author>
+				<firstname>Mike</firstname>
+				<lastname>Miker</lastname>
+			</author>
+		</authors>
+		<description>This is a discription of book 2</description>
+	</book>
+</books>
