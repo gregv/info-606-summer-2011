@@ -1,5 +1,54 @@
 #summary Things we discover about XMLDB
 
+= Creation =
+== Register Schema ==
+{{{
+begin
+dbms_xmlschema.registeruri('http://www.info606.org/Book/Book.xsd', '/public/mines/xsd/Book.xsd', 
+ local=>true,
+ gentypes=>true,
+ genbean=>false,
+ gentables=>true,
+ owner=>'greg');
+ end;
+ /
+}}}
+
+== Create Database Table ==
+=== Structured ===
+{{{
+ DROP TABLE registeredXml cascade constraints purge;
+
+CREATE TABLE registeredXml (id NUMBER, xml XMLType)
+  XMLTYPE COLUMN xml
+ XMLSCHEMA "http://www.info606.org/Book/Book.xsd"
+  ELEMENT "book";
+}}}
+
+=== Semi-Structured ===
+{{{
+ DROP TABLE binaryXml cascade constraints purge;
+
+CREATE TABLE binaryXml (id NUMBER, xml XMLType)
+  XMLTYPE COLUMN xml
+  STORE AS CLOB
+  XMLSCHEMA "http://www.info606.org/Book/Book.xsd"
+  ELEMENT "book";
+}}}
+
+= Deletion =
+
+== Unregister Schema ==
+{{{
+BEGIN
+       dbms_xmlschema.deleteSchema
+               ( schemaurl =>  'http://www.info606.org/Book/Book.xsd'
+               , delete_option => dbms_xmlschema.DELETE_CASCADE_FORCE
+               );
+    END;
+/ 
+}}}
+
 
 = Performance =
 {{{
