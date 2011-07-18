@@ -1,0 +1,25 @@
+<registration>
+	<class title="INFO606">
+		<professors>
+			<professor>
+				<firstname>Tony</firstname>
+				<lastname>Bobber</lastname>
+			</professor>
+			<professor>
+				<firstname>Frank</firstname>
+				<lastname>Tedder</lastname>
+			</professor>
+		</professors>
+		<description>This is a description of info 606</description>
+	</class>
+
+	<class title="INFO608">
+		<professors>
+			<professor>
+				<firstname>Mike</firstname>
+				<lastname>Miker</lastname>
+			</professor>
+		</professors>
+		<description>This is a description of info 608 2</description>
+	</class>
+</registration>

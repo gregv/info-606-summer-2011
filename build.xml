@@ -1,0 +1,42 @@
+<project name="xmldb-info606-project" default="all">
+
+	<property name="jaxb-jar" value="${ant.project.name}-jaxb.jar"/>
+	
+	<property name="lib.dir" value="lib" />
+	<property name="schema.dir" value="src/META-INF/schema" />
+	<property name="types.dir" value="jaxb-types" />
+	<property name="dist.dir" value="dist" />
+	
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	  <classpath>
+	    <fileset dir="${lib.dir}/jaxb" includes="*.jar" />
+	  </classpath>
+	</taskdef>
+	
+	
+	<target name="make-jaxb-jar">
+		<delete dir="${types.dir}"/>
+		<delete file="${dist.dir}/${jaxb-jar}" failonerror="false" />
+		<mkdir dir="${types.dir}" />
+		<mkdir dir="${dist.dir}" />
+		
+		<xjc destdir="${types.dir}">
+		  <schema  dir="${schema.dir}" includes="*.xsd"/>
+		</xjc>
+		
+		<javac srcdir="${types.dir}" />
+		
+		<jar destfile="${dist.dir}/${jaxb-jar}">
+			<fileset dir="${types.dir}">
+				<include name="**/*.class"/>
+			</fileset>
+		</jar>
+		
+		<delete dir="${types.dir}"/>
+	</target>
+
+	<target name="all" depends="make-jaxb-jar">
+	</target>
+
+</project>

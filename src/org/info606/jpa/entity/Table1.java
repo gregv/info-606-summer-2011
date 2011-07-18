@@ -3,12 +3,6 @@ package org.info606.jpa.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
- * @author Greg Vannoni
- * @class CS 575
- *        Purpose:
- *        Notes:
- */
 @ Entity(name = "Table1")
 public class Table1 {
 
