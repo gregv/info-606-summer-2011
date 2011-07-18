@@ -6,13 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
-/**
- * @author Greg Vannoni
- * @class CS 575
- *        Purpose:
- *        Notes:
- */
-@ Entity
+@ Entity(name = "registeredXml")
 public class MyXML {
 
     @ Id
@@ -49,6 +43,10 @@ public class MyXML {
      */
     public void setXml(String xml) {
         this.xml = xml;
+    }
+
+    public String toString() {
+        return "id: " + getId() + ", xml: " + getXml();
     }
 
 }
