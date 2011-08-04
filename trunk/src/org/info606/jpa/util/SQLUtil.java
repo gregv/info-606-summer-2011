@@ -11,7 +11,6 @@ import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
 import org.eclipse.persistence.jpa.JpaEntityManager;
 import org.eclipse.persistence.queries.ReadAllQuery;
-import org.info606.jpa.entity.MyXML;
 
 public class SQLUtil {
 
@@ -34,16 +33,16 @@ public class SQLUtil {
      * Method: searchXml<br/>
      * Sample method to perform XPath query
      */
-    public static List<MyXML> searchXmlExistsNode(String attributeName, String XPath) {
+    public static List<?> searchXmlExistsNode(Class<?> entityClass, String attributeName, String XPath) {
         EntityManager em = factory.createEntityManager();
 
-        ExpressionBuilder builder = new ExpressionBuilder(MyXML.class);
+        ExpressionBuilder builder = new ExpressionBuilder(entityClass);
         Expression criteria = builder.get(attributeName).existsNode(XPath).equal(true);
 
-        ReadAllQuery query = new ReadAllQuery(MyXML.class);
+        ReadAllQuery query = new ReadAllQuery(entityClass);
         query.setSelectionCriteria(criteria);
 
-        List<MyXML> list = (List<MyXML>)((JpaEntityManager)em).createQuery(query).getResultList();
+        List<?> list = (List<?>)((JpaEntityManager)em).createQuery(query).getResultList();
 
         em.close();
         return list;
@@ -53,16 +52,16 @@ public class SQLUtil {
      * Method: searchXml<br/>
      * Sample method to perform XPath query
      */
-    public static List<MyXML> searchXmlExtract(String attributeName, String XPath, String value) {
+    public static List<?> searchXmlExtract(Class entityClass, String attributeName, String XPath, String value) {
         EntityManager em = factory.createEntityManager();
 
-        ExpressionBuilder builder = new ExpressionBuilder(MyXML.class);
+        ExpressionBuilder builder = new ExpressionBuilder(entityClass);
         Expression criteria = builder.get(attributeName).extract(XPath).getStringVal().containsSubstring(value);
 
-        ReadAllQuery query = new ReadAllQuery(MyXML.class);
+        ReadAllQuery query = new ReadAllQuery(entityClass);
         query.setSelectionCriteria(criteria);
 
-        List<MyXML> list = (List<MyXML>)((JpaEntityManager)em).createQuery(query).getResultList();
+        List<?> list = (List<?>)((JpaEntityManager)em).createQuery(query).getResultList();
 
         em.close();
         return list;

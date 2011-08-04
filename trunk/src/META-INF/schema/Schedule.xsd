@@ -3,7 +3,7 @@
 elementFormDefault="qualified"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
 
-	<xs:include schemaLocation="http://www.info606.org/student/Student.xsd" />
+	<xs:include schemaLocation="Student.xsd" />
 
 	<xs:element name="registration">
 		<xs:complexType>
