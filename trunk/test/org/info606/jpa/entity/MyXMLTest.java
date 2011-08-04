@@ -80,9 +80,9 @@ public class MyXMLTest {
             // System.out.println("Insert # " + insertCounter + ",");
 
             // If you would rather insert via XML File, use this line
-            //  SQLUtil.insertXml(FileIO.getFileContentsAsString("Book.xml", false));
-            //  SQLUtil.insertXml(FileIO.getFileContentsAsString("Registration.xml", false));
-            SQLUtil.insertXml(getXMLFromJAXB());
+            // SQLUtil.insertXml(FileIO.getFileContentsAsString("Book.xml", false));
+            // SQLUtil.insertXml(FileIO.getFileContentsAsString("Registration.xml", false));
+            // SQLUtil.insertXml(getXMLFromJAXB());
             insertCounter++;
         }
     }
@@ -104,9 +104,9 @@ public class MyXMLTest {
         getAllSelects();
     }
 
-    @ Test
+    @ Ignore
     private void testPerformance2() {
-        //        System.out.println("Rows = " + SQLUtil.searchXmlExistsNode("xml", "/books/book/description").size());
+        // System.out.println("Rows = " + SQLUtil.searchXmlExistsNode("xml", "/books/book/description").size());
         System.out.println("Rows = " + SQLUtil.searchXmlExtract("xml", "/book/description/text()", "This is a description").size());
         System.out.println("Rows = " + SQLUtil.searchXmlExistsNode("xml", "/book/author[firstname=\"Joe\"]").size());
         System.out.println("Rows = " + SQLUtil.searchXmlExistsNode("xml", "/book/author[firstname=\"Joe\"]").size());
@@ -114,14 +114,17 @@ public class MyXMLTest {
         getAllSelects();
     }
 
+    @ Test
+    public void printXML() {
+        System.out.println(getXMLFromJAXB());
+    }
+
     public static String getXMLFromJAXB() {
         Book blah = new Book();
         blah.setDescription("This is a description");
         blah.setTitle("Title of a Book");
-
         blah.getAuthor().addAll(getRandomAuthors());
         StringWriter sw = new StringWriter();
-
         try {
             JAXBContext jc = JAXBContext.newInstance(Book.class);
             Marshaller marshaller = jc.createMarshaller();
@@ -130,23 +133,19 @@ public class MyXMLTest {
         } catch (JAXBException e1) {
             e1.printStackTrace();
         }
-
         return sw.toString();
     }
 
     private static List<AuthorType> getRandomAuthors() {
         Random ra = new Random();
         int numberofAuthors = ra.nextInt(3) + 1;
-
         List<AuthorType> authors = new ArrayList<AuthorType>();
         for (int i = 0; i < numberofAuthors; i++) {
             AuthorType author = new AuthorType();
             author.setFirstname(RandomDataGenerator.getRandomFirstname());
             author.setLastname(RandomDataGenerator.getRandomLastname());
-
             authors.add(author);
         }
-
         return authors;
     }
 

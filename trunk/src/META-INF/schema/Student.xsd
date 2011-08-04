@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema  elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Student">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="studentId" type="studentIdType" />
+
+				<xs:element name="name" type="xs:string" />
+				<xs:element name="level" type="xs:string" />
+				<xs:element name="program" type="xs:string" />
+				<xs:element name="admit_term" type="xs:string" />
+				<xs:element name="department" type="xs:string" />
+				<xs:element name="advisor" type="xs:string" />
+				<xs:element name="total_credits" type="xs:positiveInteger" />
+				
+				
+				<xs:element name="GPA">
+					<xs:simpleType>
+						<xs:restriction base="xs:double">
+							<xs:minInclusive value="0.0" />
+							<xs:maxInclusive value="4.0" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+
+				<xs:element name="status">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="active|hold" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="studentIdType">
+		<xs:restriction base="xs:integer">
+			<xs:pattern value="[0-9][0-9][0-9][0-9][0-9][0-9]"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

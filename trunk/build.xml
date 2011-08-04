@@ -1,42 +1,124 @@
 <project name="xmldb-info606-project" default="all">
 
-	<property name="jaxb-jar" value="${ant.project.name}-jaxb.jar"/>
-	
+	<property name="src-jar" value="${ant.project.name}.jar" />
+	<property name="jaxb-jar" value="${ant.project.name}-jaxb.jar" />
+	<property name="test-jar" value="${ant.project.name}-test.jar" />
+
 	<property name="lib.dir" value="lib" />
-	<property name="schema.dir" value="src/META-INF/schema" />
+	<property name="meta-inf.dir" value="src/META-INF" />
+	<property name="schema.dir" value="${meta-inf.dir}/schema" />
 	<property name="types.dir" value="jaxb-types" />
+	<property name="src.dir" value="src" />
+	<property name="test.dir" value="test" />
 	<property name="dist.dir" value="dist" />
-	
+	<property name="test.classes.dir" value="classes/test" />
+	<property name="classes.dir" value="classes/src" />
+
 
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
-	  <classpath>
-	    <fileset dir="${lib.dir}/jaxb" includes="*.jar" />
-	  </classpath>
+		<classpath>
+			<fileset dir="${lib.dir}/jaxb" includes="*.jar" />
+		</classpath>
 	</taskdef>
-	
-	
+
+
+	<target name="all" depends="make-jaxb-jar, make-jar, make-test-jar, run-junit" />
+
+	<path id="classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="classpath.test">
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${dist.dir}/${jaxb-jar}" />
+		<pathelement location="${dist.dir}/${src-jar}" />
+	</path>
+
+
+	<target name="run-junit" depends="make-test-jar">
+		<junit printsummary="yes"  haltonfailure="yes"  showoutput="yes">
+			<classpath refid="classpath.test" />
+			<classpath>
+				<pathelement location="${dist.dir}/${test-jar}" />
+			</classpath>
+			<formatter type="plain" usefile="false" />
+			<test name="org.info606.jpa.entity.AdvisorTest"  haltonfailure="yes" />
+
+			<!-- <batchtest fork="yes" todir="${reports.tests}">
+		    <fileset dir="${src.tests}">
+		      <include name="**/*Test*.java"/>
+		      <exclude name="**/AllTests.java"/>
+		    </fileset>
+		  </batchtest> -->
+
+		</junit>
+	</target>
+
+
+	<target name="make-jar">
+		<delete file="${dist.dir}/${src-jar}" failonerror="false" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${classes.dir}" />
+
+		<javac debug="true" debuglevel="lines,vars,source" srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" />
+
+		<jar destfile="${dist.dir}/${src-jar}">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+
+		<delete dir="${classes.dir}" />
+	</target>
+
+
+
+	<target name="make-test-jar">
+		<delete file="${dist.dir}/${test-jar}" failonerror="false" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${test.classes.dir}" />
+
+		<javac debug="true" debuglevel="lines,vars,source" srcdir="${test.dir}" destdir="${test.classes.dir}" classpathref="classpath.test" />
+
+		<copy file="${meta-inf.dir}/persistence.xml" todir="${test.classes.dir}/META-INF" />
+		
+		<jar destfile="${dist.dir}/${test-jar}">
+			<fileset dir="${test.classes.dir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+
+		<delete dir="${test.classes.dir}" />
+	</target>
+
+
 	<target name="make-jaxb-jar">
-		<delete dir="${types.dir}"/>
+		<delete dir="${types.dir}" />
 		<delete file="${dist.dir}/${jaxb-jar}" failonerror="false" />
 		<mkdir dir="${types.dir}" />
 		<mkdir dir="${dist.dir}" />
-		
+
 		<xjc destdir="${types.dir}">
-		  <schema  dir="${schema.dir}" includes="*.xsd"/>
+			<schema dir="${schema.dir}" includes="*.xsd" />
 		</xjc>
-		
+
 		<javac srcdir="${types.dir}" />
-		
+
 		<jar destfile="${dist.dir}/${jaxb-jar}">
 			<fileset dir="${types.dir}">
-				<include name="**/*.class"/>
+				<include name="**/*.class" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
-		
-		<delete dir="${types.dir}"/>
+
+		<delete dir="${types.dir}" />
 	</target>
 
-	<target name="all" depends="make-jaxb-jar">
-	</target>
+
+
 
 </project>
