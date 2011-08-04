@@ -2,7 +2,11 @@ package org.info606.jpa.entity;
 
 import generated.Advisor;
 
+import java.io.File;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBContext;
@@ -13,15 +17,17 @@ import junit.framework.Assert;
 import org.info606.jpa.util.EclipseLinkLogParser;
 import org.info606.jpa.util.SQLUtil;
 import org.info606.test.util.RandomDataGenerator;
+import org.info606.util.io.FileIO;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AdvisorTest {
 
-    private static final String ECLIPSELINK_LOG = "F:\\workspace\\INFO606_Project\\eclipselink.log";
+    private static final String ECLIPSELINK_LOG = "eclipselink.log";
 
     /**
      * Method: setUpBeforeClass<br/>
@@ -56,6 +62,7 @@ public class AdvisorTest {
     }
 
     private void getAllInserts() {
+        System.out.println("INSERTS");
         EclipseLinkLogParser parser = new EclipseLinkLogParser(ECLIPSELINK_LOG);
 
         String regex = "InsertObjectQuery.*?total time=(\\d{1,30})";
@@ -63,11 +70,16 @@ public class AdvisorTest {
     }
 
     private void getAllSelects() {
+        System.out.println("SELECTS");
         EclipseLinkLogParser parser = new EclipseLinkLogParser(ECLIPSELINK_LOG);
 
-        String regex = "ReadAllQuery\\(referenceClass=MyXML.*?total time=(\\d{1,30})";
-        parser.match(regex);
+        String regex = "ReadAllQuery\\(referenceClass=AdvisorEntity.*?total time=(\\d{1,30})";
+        String selects = parser.match(regex);
 
+        ArrayList<String> selectList = new ArrayList<String>(3000);
+        selectList.addAll(Arrays.asList(selects.split("\n")));
+        FileIO.writeListToFile(new File("results.csv"), selectList, ",", false);
+        System.out.println(selects);
     }
 
     // Insert into the database using random JAXB object
@@ -94,8 +106,23 @@ public class AdvisorTest {
     }
 
     @ Test
+    public void testBunchOfInserts() {
+        int counter = 0;
+        while (counter != 1050) {
+            testInsert();
+            counter++;
+        }
+
+        getAllSelects();
+        getAllInserts();
+    }
+
+    @ Ignore
     public void testInsert() {
         insert(1);
+
+        List<AdvisorEntity> list = (List<AdvisorEntity>)SQLUtil.searchXmlExistsNode(AdvisorEntity.class, "xml", "//name=\"Janet Lincecum\"");
+
     }
 
     public static String getXMLFromJAXB() {

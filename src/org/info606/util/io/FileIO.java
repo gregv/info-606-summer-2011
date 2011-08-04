@@ -1,9 +1,11 @@
 package org.info606.util.io;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -42,5 +44,19 @@ public class FileIO {
         String[] arrList = contents.split("\n");
 
         return Arrays.asList(arrList);
+    }
+
+    public static void writeListToFile(File file, List<String> list, String delimiter, boolean append) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, append));
+            for (String s : list) {
+                bw.write(s);
+                bw.write(delimiter);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

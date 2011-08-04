@@ -13,12 +13,13 @@ public class EclipseLinkLogParser {
         this.filename = filename;
     }
 
-    public void match(String regularExpression) {
+    public String match(String regularExpression) {
         Pattern pattern = Pattern.compile(regularExpression, Pattern.MULTILINE);
 
         String fileStr = FileIO.getFileContentsAsString(filename, false);
         Matcher matcher = pattern.matcher(fileStr);
 
+        StringBuffer str = new StringBuffer(1000);
         while (matcher.find()) {
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 String group = matcher.group(i);
@@ -29,12 +30,13 @@ public class EclipseLinkLogParser {
                 } catch (NumberFormatException fe) {
                 }
 
-                if (seconds > 0)
-                    group += " (" + seconds + " sec)";
+                // if (seconds > 0)
+                // group += " (" + seconds + " sec)";
 
-                System.out.println(group);
+                str.append(group + "\n");
             }
         }
 
+        return str.toString();
     }
 }
