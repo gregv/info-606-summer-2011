@@ -76,19 +76,8 @@ public class SQLUtil {
         return q.getResultList();
     }
 
-    /**
-     * Method: insertXml<br/>
-     * Sample method for inserting XML into database from file
-     */
-    public static void insertXml(String strXml) {
-        EntityManager em = factory.createEntityManager();
-
-        // Create new todo
-        em.getTransaction().begin();
-        MyXML xmldb = new MyXML();
-        xmldb.setXml(strXml);
-        em.persist(xmldb);
-        em.getTransaction().commit();
-        em.close();
+    public static EntityManager getEntityManager() {
+        return factory.createEntityManager();
     }
+
 }
