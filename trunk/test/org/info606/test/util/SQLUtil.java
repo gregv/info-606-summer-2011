@@ -1,6 +1,8 @@
-package org.info606.jpa.util;
+package org.info606.test.util;
 
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,11 +13,15 @@ import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
 import org.eclipse.persistence.jpa.JpaEntityManager;
 import org.eclipse.persistence.queries.ReadAllQuery;
+import org.info606.jpa.entity.AbstractEntityTestInterface;
+import org.info606.jpa.entity.AbstractXmlTypeEntity;
+import org.info606.mock.MockEntityManager;
 
 public class SQLUtil {
 
     private static final String         PERSISTENCE_UNIT_NAME = "myem";
     private static EntityManagerFactory factory               = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+    private static Logger               logger                = Logger.getLogger(SQLUtil.class.getName());
 
     public static int truncateTable(String tablename) {
         EntityManager em = factory.createEntityManager();
@@ -34,7 +40,7 @@ public class SQLUtil {
      * Sample method to perform XPath query
      */
     public static List<?> searchXmlExistsNode(Class<?> entityClass, String attributeName, String XPath) {
-        EntityManager em = factory.createEntityManager();
+        EntityManager em = getEntityManager();
 
         ExpressionBuilder builder = new ExpressionBuilder(entityClass);
         Expression criteria = builder.get(attributeName).existsNode(XPath).equal(true);
@@ -42,7 +48,12 @@ public class SQLUtil {
         ReadAllQuery query = new ReadAllQuery(entityClass);
         query.setSelectionCriteria(criteria);
 
-        List<?> list = (List<?>)((JpaEntityManager)em).createQuery(query).getResultList();
+        Query q = ((JpaEntityManager)em).createQuery(query);
+
+        List<?> list = null;
+        if (q != null) {
+            list = q.getResultList();
+        }
 
         em.close();
         return list;
@@ -75,8 +86,44 @@ public class SQLUtil {
         return q.getResultList();
     }
 
+    public static void insert(int numToMake, AbstractXmlTypeEntity entity, AbstractEntityTestInterface testInterface) {
+        logger.entering("insert", null);
+        EntityManager em = getEntityManager();
+
+        int insertCounter = 0;
+        while (insertCounter != numToMake) {
+            em.getTransaction().begin();
+
+            String xml = testInterface.getXMLFromJAXB();
+            logger.fine("XML = " + xml);
+            entity.setXml(xml);
+
+            em.persist(entity);
+            em.getTransaction().commit();
+            em.close();
+
+            insertCounter++;
+        }
+    }
+
     public static EntityManager getEntityManager() {
-        return factory.createEntityManager();
+        logger.entering("EntityManager", "");
+        InetSocketAddress address = new InetSocketAddress("oracledb", 1521);
+        boolean dbAvailable = address.isUnresolved();
+        logger.info("isUnresolved = " + dbAvailable);
+
+        EntityManager em = null;
+
+        if (dbAvailable) {
+            logger.info("Returning real EntityManager");
+            em = factory.createEntityManager();
+        } else {
+            logger.info("Returning MockEntityManager");
+            em = new MockEntityManager();
+        }
+
+        logger.exiting("EntityManager", "");
+        return em;
     }
 
 }

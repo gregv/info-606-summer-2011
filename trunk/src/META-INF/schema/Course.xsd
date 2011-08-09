@@ -15,9 +15,9 @@
 
 							<xs:element name="title" type="xs:string" />
 							<xs:element name="instructor" type="xs:string" />
-							<xs:element name="day" type="xs:gDay" />
-							<xs:element name="starttime" type="xs:time" />
-							<xs:element name="endtime" type="xs:time" />
+							<xs:element name="day" type="dayOfWeekType" minOccurs="0" maxOccurs="5"/>
+							<xs:element name="starttime" type="xs:dateTime" />
+							<xs:element name="endtime" type="xs:dateTime" />
 
 							<xs:element name="credits">
 								<xs:simpleType>
@@ -39,6 +39,18 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
+
+	<xs:simpleType name="dayOfWeekType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="M" />
+			<xs:enumeration value="T" />
+			<xs:enumeration value="W" />
+			<xs:enumeration value="R" />
+			<xs:enumeration value="F" />
+		</xs:restriction>
+	</xs:simpleType>
+
 
 	<xs:simpleType name="crnType">
 		<xs:restriction base="xs:integer">

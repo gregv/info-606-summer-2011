@@ -40,7 +40,7 @@
 
 
 	<target name="run-junit" depends="make-test-jar">
-		<junit printsummary="yes"  haltonfailure="yes"  showoutput="yes">
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes">
 			<classpath refid="classpath.test" />
 			<classpath>
 				<pathelement location="${dist.dir}/${test-jar}" />

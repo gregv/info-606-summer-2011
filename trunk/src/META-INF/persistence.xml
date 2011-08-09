@@ -4,14 +4,19 @@
 	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
 	<persistence-unit name="myem" transaction-type="RESOURCE_LOCAL">
 
+		<class>org.info606.jpa.entity.AbstractXmlTypeEntity</class>
 		<class>org.info606.jpa.entity.AdvisorEntity</class>
+		<class>org.info606.jpa.entity.CourseEntity</class>
+		<class>org.info606.jpa.entity.ScheduleEntity</class>
+		<class>org.info606.jpa.entity.StudentEntity</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@oracledb:1521:xe" />
 			<property name="javax.persistence.jdbc.user" value="info606" />
 			<property name="javax.persistence.jdbc.password" value="pass" />
-			<property name="eclipselink.profiler" value="PerformanceProfiler" />
+			<!-- <property name="eclipselink.profiler" value="PerformanceProfiler" 
+				/> -->
 			<property name="eclipselink.logging.level" value="FINE" />
 			<property name="eclipselink.logging.file" value="eclipselink.log" />
 		</properties>
