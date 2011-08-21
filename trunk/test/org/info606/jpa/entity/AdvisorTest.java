@@ -25,7 +25,7 @@ public class AdvisorTest extends AbstractEntityTestInterface {
         logger.entering("testBunchOfInserts", null);
 
         int counter = 0;
-        while (counter != 1050) {
+        while (counter != getNumberToInsert()) {
             testOneInsert();
             counter++;
         }

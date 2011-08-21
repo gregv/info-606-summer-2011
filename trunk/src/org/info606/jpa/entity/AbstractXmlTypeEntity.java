@@ -1,10 +1,10 @@
 package org.info606.jpa.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
-@ Entity
+@ MappedSuperclass
 public abstract class AbstractXmlTypeEntity {
 
     @ Id
