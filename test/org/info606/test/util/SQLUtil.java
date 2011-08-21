@@ -2,6 +2,7 @@ package org.info606.test.util;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
@@ -22,6 +23,7 @@ public class SQLUtil {
     private static final String         PERSISTENCE_UNIT_NAME = "myem";
     private static EntityManagerFactory factory               = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private static Logger               logger                = Logger.getLogger(SQLUtil.class.getName());
+    private static String               CLASS_NAME            = SQLUtil.class.getName();
 
     public static int truncateTable(String tablename) {
         EntityManager em = factory.createEntityManager();
@@ -40,8 +42,10 @@ public class SQLUtil {
      * Sample method to perform XPath query
      */
     public static List<?> searchXmlExistsNode(Class<?> entityClass, String attributeName, String XPath) {
+        logger.entering(CLASS_NAME, "searchXmlExistsNode");
         EntityManager em = getEntityManager();
 
+        logger.log(Level.FINE, "attributeName = {0}, xPath = {1}", new Object[] {attributeName, XPath});
         ExpressionBuilder builder = new ExpressionBuilder(entityClass);
         Expression criteria = builder.get(attributeName).existsNode(XPath).equal(true);
 
@@ -56,6 +60,8 @@ public class SQLUtil {
         }
 
         em.close();
+
+        logger.exiting(CLASS_NAME, "searchXmlExistsNode");
         return list;
     }
 
@@ -109,8 +115,8 @@ public class SQLUtil {
     public static EntityManager getEntityManager() {
         logger.entering("EntityManager", "");
         InetSocketAddress address = new InetSocketAddress("oracledb", 1521);
-        boolean dbAvailable = address.isUnresolved();
-        logger.info("isUnresolved = " + dbAvailable);
+        boolean dbAvailable = !address.isUnresolved();
+        logger.fine("dbAvailable = " + dbAvailable);
 
         EntityManager em = null;
 

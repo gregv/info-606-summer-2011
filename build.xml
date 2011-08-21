@@ -40,7 +40,9 @@
 
 
 	<target name="run-junit" depends="make-test-jar">
-		<junit printsummary="yes" haltonfailure="yes" showoutput="yes">
+		<junit printsummary="yes" haltonfailure="yes" showoutput="yes" fork="yes">
+			<jvmarg value="-Djava.util.logging.config.file=conf/logging.properties"/>
+			
 			<classpath refid="classpath.test" />
 			<classpath>
 				<pathelement location="${dist.dir}/${test-jar}" />
