@@ -41,6 +41,8 @@ public abstract class AbstractEntityTestInterface {
                 NUMBER_OF_RECORDS_TO_INSERT = Integer.parseInt(numToInsert);
             } catch (Exception e) {
             }
+        } else {
+            logger.warning("*** Environment variable \"numInsert\" was not set, defaulting to 1.");
         }
 
         return NUMBER_OF_RECORDS_TO_INSERT;
