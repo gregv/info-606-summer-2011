@@ -1,8 +1,10 @@
 package org.info606.test.util;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,26 +12,45 @@ import org.info606.util.io.FileIO;
 
 public class EclipseLinkLogParser {
 
-    private String filename;
+    private static final String CLASS_NAME = EclipseLinkLogParser.class.getName();
+    private static Logger       logger     = Logger.getLogger(CLASS_NAME);
+
+    private String              filename;
 
     public EclipseLinkLogParser(String filename) {
         this.filename = filename;
     }
 
     public void saveAllInsertPerformance(File file, String entityName) {
-        ArrayList<String> selectList = new ArrayList<String>(3000);
-        selectList.addAll(Arrays.asList(getAllInsertPerformanceForEntity(entityName).split("\n")));
-        FileIO.writeListToFile(file, selectList, ",", false);
+        logger.entering(CLASS_NAME, "saveAllInsertPerformance");
+        List<String> insertList = new LinkedList<String>();
+        insertList.addAll(Arrays.asList(getAllInsertPerformanceForEntity(entityName).split("\n")));
+
+        FileIO.writeListToFile(file, addNumbersToList(insertList), ",", false);
+        logger.entering(CLASS_NAME, "saveAllInsertPerformance");
     }
 
     public void saveAllSelectPerformance(File file, String entityName) {
-        ArrayList<String> selectList = new ArrayList<String>(3000);
+        logger.entering(CLASS_NAME, "saveAllSelectPerformance");
+        List<String> selectList = new LinkedList<String>();
         selectList.addAll(Arrays.asList(getAllSelectPerformanceForEntity(entityName).split("\n")));
-        FileIO.writeListToFile(file, selectList, ",", false);
+
+        FileIO.writeListToFile(file, addNumbersToList(selectList), ",", false);
+        logger.exiting(CLASS_NAME, "saveAllSelectPerformance");
+    }
+
+    private List<String> addNumbersToList(List<String> list) {
+        for (int i = 0; i < list.size(); i++) {
+            list.set(i, i + 1 + ", " + list.get(i));
+        }
+
+        return list;
     }
 
     public String getAllSelectPerformanceForEntity(String entityName) {
+        logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntity", entityName);
         String regex = "ReadAllQuery\\(referenceClass=" + entityName + ".*?total time=(\\d{1,30})";
+        logger.exiting(CLASS_NAME, "getAllSelectPerformanceForEntity", regex);
         return match(regex);
     }
 
@@ -39,6 +60,7 @@ public class EclipseLinkLogParser {
     }
 
     public String match(String regularExpression) {
+        logger.entering(CLASS_NAME, "match", regularExpression);
         Pattern pattern = Pattern.compile(regularExpression, Pattern.MULTILINE);
 
         String fileStr = FileIO.getFileContentsAsString(filename, false);
@@ -62,6 +84,8 @@ public class EclipseLinkLogParser {
             }
         }
 
-        return str.toString();
+        String result = str.toString();
+        logger.entering(CLASS_NAME, "match", result);
+        return result;
     }
 }

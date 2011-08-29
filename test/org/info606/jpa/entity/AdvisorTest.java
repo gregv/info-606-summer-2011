@@ -20,7 +20,7 @@ public class AdvisorTest extends AbstractEntityTestInterface {
     private static final String CLASS_NAME = AdvisorTest.class.getName();
     private static Logger       logger     = Logger.getLogger(CLASS_NAME);
 
-    @ Test
+    @ Ignore
     public void testBunchOfInserts() {
         logger.entering("testBunchOfInserts", null);
 
@@ -34,6 +34,16 @@ public class AdvisorTest extends AbstractEntityTestInterface {
         eclipseLinkParser.saveAllInsertPerformance(new File("insert_results.csv"), "Advisor");
 
         logger.exiting("testBunchOfInserts", null);
+    }
+
+    @ Ignore
+    public void testSelects() {
+        eclipseLinkParser.saveAllSelectPerformance(new File("select_results.csv"), "Advisor");
+    }
+
+    @ Test
+    public void testInserts() {
+        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results.csv"), "Advisor");
     }
 
     @ Ignore
