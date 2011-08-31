@@ -13,11 +13,13 @@ import org.info606.util.io.FileIO;
  */
 public class RandomDataGenerator {
 
-    private static final String FIRST_NAME_FILE    = "test/data/firstnames.txt";
-    private static final String LAST_NAME_FILE     = "test/data/lastnames.txt";
-    private static final String COURSE_TITLE_FILE  = "test/data/course_titles.txt";
-    private static final String EMAIL_ADDRESS_FILE = "test/data/email_address_suffix.txt";
-    private static final Random ra                 = new Random();
+    private static final String FIRST_NAME_FILE       = "test/data/firstnames.txt";
+    private static final String LAST_NAME_FILE        = "test/data/lastnames.txt";
+    private static final String COURSE_TITLE_FILE     = "test/data/course_titles.txt";
+    private static final String EMAIL_ADDRESS_FILE    = "test/data/email_address_suffix.txt";
+    private static final String ACADEMIC_PROGRAM_FILE = "test/data/academic_program.txt";
+
+    private static final Random ra                    = new Random();
 
     public static String getRandomFirstname() {
         List<String> names = FileIO.getFileContentsAsList(FIRST_NAME_FILE);
@@ -65,6 +67,16 @@ public class RandomDataGenerator {
         String building = prefixes[ra.nextInt(prefixes.length)];
         int number = getRandomNumberWithRange(100, 400);
         return building + " " + number;
+    }
+
+    public static String getRandomTerm() {
+        String[] prefixes = {"Fall", "Winter", "Spring", "Summer"};
+        return prefixes[ra.nextInt(prefixes.length)];
+    }
+
+    public static String getRandomProgram() {
+        List<String> names = FileIO.getFileContentsAsList(ACADEMIC_PROGRAM_FILE);
+        return names.get(ra.nextInt(names.size()));
     }
 
     public static String zeroPad(String s, int length) {
