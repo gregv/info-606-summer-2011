@@ -12,6 +12,7 @@ import javax.xml.bind.Marshaller;
 
 import org.info606.test.util.RandomDataGenerator;
 import org.info606.test.util.SQLUtil;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -20,7 +21,14 @@ public class AdvisorTest extends AbstractEntityTestInterface {
     private static final String CLASS_NAME = AdvisorTest.class.getName();
     private static Logger       logger     = Logger.getLogger(CLASS_NAME);
 
-    @ Ignore
+    @ BeforeClass
+    public static void truncateTables() {
+        if (shouldTruncateTables()) {
+            SQLUtil.truncateTable("ADVISOR");
+        }
+    }
+
+    @ Test
     public void testBunchOfInserts() {
         logger.entering("testBunchOfInserts", null);
 
@@ -30,20 +38,10 @@ public class AdvisorTest extends AbstractEntityTestInterface {
             counter++;
         }
 
-        eclipseLinkParser.saveAllSelectPerformance(new File("select_results.csv"), "Advisor");
-        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results.csv"), "Advisor");
+        eclipseLinkParser.saveAllSelectPerformance(new File("select_results_advisor.csv"), "Advisor");
+        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results_advisor.csv"), "Advisor");
 
         logger.exiting("testBunchOfInserts", null);
-    }
-
-    @ Ignore
-    public void testSelects() {
-        eclipseLinkParser.saveAllSelectPerformance(new File("select_results.csv"), "Advisor");
-    }
-
-    @ Test
-    public void testInserts() {
-        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results.csv"), "Advisor");
     }
 
     @ Ignore
@@ -81,7 +79,7 @@ public class AdvisorTest extends AbstractEntityTestInterface {
         }
 
         String result = sw.toString();
-        System.out.println("-----------------------\n" + result + "\n---------------------");
+        logger.fine("-----------------------\n" + result + "\n---------------------");
         return result;
     }
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema  elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
 	<xs:element name="Student">
 		<xs:complexType>
 			<xs:sequence>
@@ -12,8 +14,8 @@
 				<xs:element name="department" type="xs:string" />
 				<xs:element name="advisor" type="xs:string" />
 				<xs:element name="total_credits" type="xs:positiveInteger" />
-				
-				
+
+
 				<xs:element name="GPA">
 					<xs:simpleType>
 						<xs:restriction base="xs:double">

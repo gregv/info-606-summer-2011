@@ -26,6 +26,7 @@ public class SQLUtil {
     private static String               CLASS_NAME            = SQLUtil.class.getName();
 
     public static int truncateTable(String tablename) {
+        logger.entering(CLASS_NAME, "truncateTable");
         EntityManager em = factory.createEntityManager();
 
         String sql = "TRUNCATE TABLE " + tablename;
@@ -34,6 +35,8 @@ public class SQLUtil {
         int numrows = em.createNativeQuery(sql).executeUpdate();
         em.getTransaction().commit();
         em.close();
+
+        logger.exiting(CLASS_NAME, "truncateTable", numrows);
         return numrows;
     }
 
@@ -124,6 +127,7 @@ public class SQLUtil {
             logger.info("Returning real EntityManager");
             em = factory.createEntityManager();
         } else {
+            logger.warning("\n\n\n Real Database Not Available! Returning Mock Entity Manager!!!\n\n\n");
             logger.info("Returning MockEntityManager");
             em = new MockEntityManager();
         }
@@ -131,5 +135,4 @@ public class SQLUtil {
         logger.exiting("EntityManager", "");
         return em;
     }
-
 }

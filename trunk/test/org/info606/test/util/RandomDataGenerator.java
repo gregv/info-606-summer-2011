@@ -1,5 +1,7 @@
 package org.info606.test.util;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -45,8 +47,8 @@ public class RandomDataGenerator {
         return ints[ra.nextInt(ints.length)];
     }
 
-    public static int getRandomNumberWithRange(int min, int max) {
-        int[] ints = new int[max - min];
+    public static int getRandomIntegerWithRange(int min, int max) {
+        int[] ints = new int[max - min + 1];
         int counter = 0;
         for (int i = min; i <= max; i++) {
             ints[counter] = i;
@@ -54,6 +56,23 @@ public class RandomDataGenerator {
         }
 
         return ints[ra.nextInt(ints.length)];
+    }
+
+    public static double getRandomDoubleWithRange(int min, int max, double increment) {
+
+        List<Double> doubles = new ArrayList<Double>(max);
+
+        // This fixes an issue with some numbers that have many decimal places
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        double currNum = min;
+        while (currNum <= max) {
+            currNum = new Double(df.format(currNum));
+            doubles.add(currNum);
+            currNum += increment;
+        }
+
+        return doubles.get(ra.nextInt(doubles.size()));
     }
 
     public static String getRandomCoursePrefix() {
@@ -65,7 +84,7 @@ public class RandomDataGenerator {
     public static String getRandomLocation() {
         String[] prefixes = {"SMITH", "CHAVEZ", "WAREN", "KELLER"};
         String building = prefixes[ra.nextInt(prefixes.length)];
-        int number = getRandomNumberWithRange(100, 400);
+        int number = getRandomIntegerWithRange(100, 400);
         return building + " " + number;
     }
 

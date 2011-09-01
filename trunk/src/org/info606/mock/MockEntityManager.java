@@ -236,7 +236,7 @@ public class MockEntityManager implements JpaEntityManager {
 
     @ Override
     public void persist(Object arg0) {
-        System.out.println("Persisting: " + arg0);
+        logger.fine("Persisting: " + arg0);
         // TODO Auto-generated method stub
 
     }
