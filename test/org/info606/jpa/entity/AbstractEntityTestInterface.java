@@ -1,10 +1,12 @@
 package org.info606.jpa.entity;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.info606.test.util.EclipseLinkLogParser;
 
@@ -13,8 +15,24 @@ public abstract class AbstractEntityTestInterface {
     protected static EclipseLinkLogParser eclipseLinkParser           = new EclipseLinkLogParser(ECLIPSELINK_LOG);
     private static Logger                 logger                      = Logger.getLogger(AbstractEntityTestInterface.class.getName());
     private static int                    NUMBER_OF_RECORDS_TO_INSERT = 1;
+    private static final String           CLASS_NAME                  = AbstractEntityTestInterface.class.getName();
 
     public abstract String getXMLFromJAXB();
+
+    public static boolean shouldTruncateTables() {
+        logger.entering(CLASS_NAME, "truncateTables");
+        boolean result = false;
+
+        String truncate = System.getenv("truncate");
+        if (truncate != null && truncate.equalsIgnoreCase("yes") || truncate.equalsIgnoreCase("true")) {
+            result = true;
+        } else {
+            logger.fine("truncate was set to false, not truncating tables");
+        }
+
+        logger.exiting(CLASS_NAME, "truncateTables", result);
+        return result;
+    }
 
     public String marshall(Object o) {
         StringWriter sw = new StringWriter();
@@ -31,6 +49,22 @@ public abstract class AbstractEntityTestInterface {
 
         String result = sw.toString();
         logger.fine("-----------------------\n" + result + "\n---------------------");
+        return result;
+    }
+
+    public Object unmarshall(String str, Class targetClass) {
+        Object result = null;
+
+        try {
+            JAXBContext jc = JAXBContext.newInstance(targetClass);
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+            result = unmarshaller.unmarshal(new StringReader(str));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            return null;
+        }
+
         return result;
     }
 

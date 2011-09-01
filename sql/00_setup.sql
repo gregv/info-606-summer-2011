@@ -20,6 +20,8 @@ grant create view to info606;
 grant create any table to info606;
 grant create materialized view to info606;
 grant ctxapp to info606;
+grant SELECT_CATALOG_ROLE TO info606;
+grant SELECT_ANY_DICTIONARY to info606;
 
 desc resource_view;
 
@@ -29,10 +31,23 @@ desc resource_view;
 
 --
 -- FTP XSDs to /public before doing the steps below
+-- ftp://xdb@127.0.0.1 using password xdbpwd
 --
 
 
 -- Register schemas
+
+--
+-- ADVISOR
+--
+ BEGIN
+       dbms_xmlschema.deleteSchema
+               ( schemaurl =>  'http://www.info606.org/advisor/Advisor.xsd'
+               , delete_option => dbms_xmlschema.DELETE_CASCADE_FORCE
+               );
+    END;
+/ 
+
 begin
 dbms_xmlschema.registerSchema('http://www.info606.org/advisor/Advisor.xsd', 
 xdburitype('/public/Advisor.xsd'), 
@@ -43,6 +58,18 @@ xdburitype('/public/Advisor.xsd'),
  owner=>'info606');
  end;
  /
+
+--
+-- COURSE
+--
+ BEGIN
+       dbms_xmlschema.deleteSchema
+               ( schemaurl =>  'http://www.info606.org/course/Course.xsd'
+               , delete_option => dbms_xmlschema.DELETE_CASCADE_FORCE
+               );
+    END;
+/ 
+
 
 begin
 dbms_xmlschema.registeruri('http://www.info606.org/course/Course.xsd', '/public/Course.xsd', 
@@ -55,17 +82,58 @@ dbms_xmlschema.registeruri('http://www.info606.org/course/Course.xsd', '/public/
  /
  
 
- 
+
+--
+-- STUDENT
+--
+
+  BEGIN
+       dbms_xmlschema.deleteSchema
+               ( schemaurl =>  'http://www.info606.org/student/Student.xsd'
+               , delete_option => dbms_xmlschema.DELETE_CASCADE_FORCE
+               );
+    END;
+/ 
+
  begin
 dbms_xmlschema.registeruri('http://www.info606.org/student/Student.xsd', '/public/Student.xsd', 
  local=>true,
  gentypes=>true,
  genbean=>false,
- gentables=>true,
+ gentables=>false,
  owner=>'info606');
  end;
  /
 
+DROP TABLE Student cascade constraints purge;
+
+CREATE TABLE Student of XMLTYPE
+ XMLSCHEMA "http://www.info606.org/student/Student.xsd"
+  ELEMENT "Student";
+  
+create unique index student_pk on Student(extractValue(object_value,'/Student/studentId') );
+drop index student_pk;
+SELECT * FROM user_indexes where table_name = 'STUDENT';
+
+create index student_gpa_inx on Student(extractValue(object_value,'//GPA') );
+drop index student_gpa_inx;
+
+
+SELECT OBJECT_VALUE FROM STUDENT WHERE (existsNode(OBJECT_VALUE,'/Student[GPA >0.9 and GPA <1.5]') = 1);
+
+
+
+
+--
+-- SCHEDULE
+--
+ BEGIN
+       dbms_xmlschema.deleteSchema
+               ( schemaurl =>  'http://www.info606.org/schedule/Schedule.xsd'
+               , delete_option => dbms_xmlschema.DELETE_CASCADE_FORCE
+               );
+    END;
+/ 
 
  begin
 dbms_xmlschema.registeruri('http://www.info606.org/schedule/Schedule.xsd', '/public/Schedule.xsd', 
@@ -86,11 +154,7 @@ CREATE TABLE Schedule of XMLTYPE
  XMLSCHEMA "http://www.info606.org/schedule/Schedule.xsd"
   ELEMENT "registration";
   
-DROP TABLE Student cascade constraints purge;
 
-CREATE TABLE Student of XMLTYPE
- XMLSCHEMA "http://www.info606.org/student/Student.xsd"
-  ELEMENT "Student";
   
 
 DROP TABLE Course cascade constraints purge;

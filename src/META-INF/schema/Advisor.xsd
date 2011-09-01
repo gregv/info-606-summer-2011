@@ -4,7 +4,7 @@
  xmlns:xdb="http://xmlns.oracle.com/xdb"
  elementFormDefault="qualified">
 
-	<xs:element name="advisor"  xdb:defaultTable="ADVISOR">
+	<xs:element name="advisor" xdb:defaultTable="ADVISOR">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="name" type="xs:string" />

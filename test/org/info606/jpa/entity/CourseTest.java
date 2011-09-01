@@ -1,6 +1,6 @@
 package org.info606.jpa.entity;
 
-import generated.CourseInfo.Course;
+import generated.Course;
 import generated.DayOfWeekType;
 
 import java.io.File;
@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.info606.test.util.RandomDataGenerator;
 import org.info606.test.util.SQLUtil;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -18,6 +19,13 @@ public class CourseTest extends AbstractEntityTestInterface {
 
     private static final String CLASS_NAME = CourseTest.class.getName();
     private static Logger       logger     = Logger.getLogger(CLASS_NAME);
+
+    @ BeforeClass
+    public static void truncateTables() {
+        if (shouldTruncateTables()) {
+            SQLUtil.truncateTable("COURSE");
+        }
+    }
 
     @ Test
     public void testBunchOfInserts() {
@@ -29,8 +37,8 @@ public class CourseTest extends AbstractEntityTestInterface {
             counter++;
         }
 
-        eclipseLinkParser.saveAllSelectPerformance(new File("select_results.csv"), "Course");
-        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results.csv"), "Course");
+        eclipseLinkParser.saveAllSelectPerformance(new File("select_results_course.csv"), "Course");
+        eclipseLinkParser.saveAllInsertPerformance(new File("insert_results_course.csv"), "Course");
 
         logger.exiting("testBunchOfInserts", null);
     }
@@ -51,13 +59,13 @@ public class CourseTest extends AbstractEntityTestInterface {
         String fname = RandomDataGenerator.getRandomFirstname();
         String lname = RandomDataGenerator.getRandomLastname();
 
-        course.setCapacity((short)RandomDataGenerator.getRandomNumberWithRange(0, 50));
-        course.setFilled((short)RandomDataGenerator.getRandomNumberWithRange(0, course.getCapacity()));
+        course.setCapacity((short)RandomDataGenerator.getRandomIntegerWithRange(0, 50));
+        course.setFilled((short)RandomDataGenerator.getRandomIntegerWithRange(0, course.getCapacity()));
         course.setRemaining((short)(course.getCapacity() - course.getFilled()));
         course.setWaitlist((short)0);
 
         course.setCoursePrefix(RandomDataGenerator.getRandomCoursePrefix());
-        course.setCredits(RandomDataGenerator.getRandomNumberWithRange(0, 5));
+        course.setCredits(RandomDataGenerator.getRandomIntegerWithRange(0, 5));
 
         DayOfWeekType[] days = {DayOfWeekType.M, DayOfWeekType.W, DayOfWeekType.F};
         course.getDay().addAll(Arrays.asList(days));
