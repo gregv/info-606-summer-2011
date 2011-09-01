@@ -95,8 +95,8 @@ public class SQLUtil {
         return q.getResultList();
     }
 
-    public static void insert(int numToMake, AbstractXmlTypeEntity entity, AbstractEntityTestInterface testInterface) {
-        logger.entering("insert", null);
+    public static void insertRandom(int numToMake, AbstractXmlTypeEntity entity, AbstractEntityTestInterface testInterface) {
+        logger.entering("insertRandom", null);
         EntityManager em = getEntityManager();
 
         int insertCounter = 0;
@@ -104,7 +104,6 @@ public class SQLUtil {
             em.getTransaction().begin();
 
             String xml = testInterface.getXMLFromJAXB();
-            logger.fine("XML = " + xml);
             entity.setXml(xml);
 
             em.persist(entity);
@@ -112,7 +111,24 @@ public class SQLUtil {
             em.close();
 
             insertCounter++;
+
         }
+
+        logger.exiting("insertRandom", null);
+    }
+
+    public static void insert(AbstractXmlTypeEntity entity, String xml) {
+        logger.entering("insert", null);
+        EntityManager em = getEntityManager();
+
+        em.getTransaction().begin();
+        entity.setXml(xml);
+
+        em.persist(entity);
+        em.getTransaction().commit();
+        em.close();
+
+        logger.exiting("insert", null);
     }
 
     public static EntityManager getEntityManager() {
@@ -124,7 +140,7 @@ public class SQLUtil {
         EntityManager em = null;
 
         if (dbAvailable) {
-            logger.info("Returning real EntityManager");
+            logger.fine("Returning real EntityManager");
             em = factory.createEntityManager();
         } else {
             logger.warning("\n\n\n Real Database Not Available! Returning Mock Entity Manager!!!\n\n\n");

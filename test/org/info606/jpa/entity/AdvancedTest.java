@@ -1,5 +1,6 @@
 package org.info606.jpa.entity;
 
+import generated.Advisor;
 import generated.Student;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.persistence.Query;
 
 import org.info606.test.util.SQLUtil;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -24,7 +26,7 @@ public class AdvancedTest extends AbstractEntityTestInterface {
     private static final String CLASS_NAME = AdvancedTest.class.getName();
     private static Logger       logger     = Logger.getLogger(CLASS_NAME);
 
-    @ Test
+    @ Ignore
     public void testDelete() {
         // Find something in the database
 
@@ -57,11 +59,51 @@ public class AdvancedTest extends AbstractEntityTestInterface {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.info606.jpa.entity.AbstractEntityTestInterface#getXMLFromJAXB()
-     */
-    @ Override
+    @ Test
+    public void advancedStudentQuery() {
+        String xPathProgram = "existsNode(OBJECT_VALUE, '/Student[program = \"Civil Engineering\"]') = 1";
+        String xPathAdmitTerm = "contains(object_value, 'Spring 2008 INPATH (/Student/admit_term)') > 0";
+        // Slower query: String xPathAdmitTerm = "existsNode(object_value, '/Student/admit_term[ora:contains(text(), \"Spring 2008\") > 0]','xmlns:ora=\"http://xmlns.oracle.com/xdb\"' ) = 1";
+
+        String nativeQuery = "SELECT OBJECT_VALUE FROM STUDENT WHERE " + xPathProgram + " AND " + xPathAdmitTerm;
+
+        EntityManager em = SQLUtil.getEntityManager();
+
+        Query q = em.createNativeQuery(nativeQuery, StudentEntity.class);
+        List<StudentEntity> list = (List<StudentEntity>)q.getResultList();
+
+        double time = Integer.parseInt(eclipseLinkParser.getAllSelectPerformanceForEntity("Student").trim()) / (1E9);
+
+        logger.log(Level.INFO, "advancedStudentQuery returned {0} records and took {1} seconds.", new Object[] {list.size(), time});
+    }
+
+    @ Test
+    public void advancedStudentAdvisorQuery() {
+        // Get all Students for each advisor
+        EntityManager em = SQLUtil.getEntityManager();
+
+        String getAllAdvisors = "SELECT OBJECT_VALUE FROM ADVISOR";
+        List<AdvisorEntity> advisors = (List<AdvisorEntity>)em.createNativeQuery(getAllAdvisors, AdvisorEntity.class).getResultList();
+        for (AdvisorEntity entity : advisors) {
+            Advisor advisor = (Advisor)unmarshall(entity.getXml(), Advisor.class);
+            int employeeId = advisor.getEmployeeId();
+
+            String xpath = "/Student[advisor=" + advisor.getEmployeeId() + "]";
+            List<StudentEntity> students = (List<StudentEntity>)SQLUtil.searchXmlExistsNode(StudentEntity.class, "xml", xpath);
+
+            logger.log(Level.INFO, "Advisor with empId {0} advises {1} students.", new Object[] {employeeId, students.size()});
+        }
+
+        List<String> selects = eclipseLinkParser.getAllSelectPerformanceForEntityAsList("Student");
+
+        logger.log(Level.INFO, "advancedStudentAdvisorQuery took {0} seconds on average.", new Object[] {eclipseLinkParser.averageListOfStringsAsIntegers(selects) / (1E9)});
+
+    }
+
+    public Object getRandomObject() {
+        throw new UnsupportedOperationException("This is not supported in this class!");
+    }
+
     public String getXMLFromJAXB() {
         throw new UnsupportedOperationException("This is not supported in this class!");
     }

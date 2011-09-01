@@ -1,5 +1,6 @@
 package org.info606.jpa.entity;
 
+import generated.Advisor;
 import generated.Student;
 
 import java.io.File;
@@ -50,27 +51,49 @@ public class StudentTest extends AbstractEntityTestInterface {
     @ Ignore
     public void testOneInsert() {
         logger.entering("testOneInsert", null);
-        SQLUtil.insert(1, new StudentEntity(), this);
+        SQLUtil.insertRandom(1, new StudentEntity(), this);
         List<StudentEntity> list = (List<StudentEntity>)SQLUtil.searchXmlExistsNode(StudentEntity.class, "xml", "//name=\"Janet Lincecum\"");
         logger.entering("testOneInsert", null);
     }
 
-    public String getXMLFromJAXB() {
+    public Student getRandomObject() {
         Student student = new Student();
         String fname = RandomDataGenerator.getRandomFirstname();
         String lname = RandomDataGenerator.getRandomLastname();
-        // student.setStudentId(new BigInteger("234567"));
         student.setStudentId(new BigInteger(RandomDataGenerator.getRandomIntegerWithRange(1000, 10000000) + ""));
         student.setName(fname + " " + lname);
         student.setLevel("Graduate");
         student.setProgram(RandomDataGenerator.getRandomProgram());
         student.setAdmitTerm(RandomDataGenerator.getRandomTerm() + " 2008");
         student.setDepartment(null);
-        student.setAdvisor(fname + " " + lname);
         student.setTotalCredits(new BigInteger(RandomDataGenerator.getRandomIntegerWithRange(0, 45) + ""));
         student.setGPA(RandomDataGenerator.getRandomDoubleWithRange(1, 4, 0.2));
         student.setStatus("Active");
-        String result = marshall(student).toString();
+
+        // See if any advisors exist
+        List<AdvisorEntity> advisors = (List<AdvisorEntity>)SQLUtil.searchXmlExistsNode(AdvisorEntity.class, "xml", "/Advisor/*");
+        if (advisors != null && !advisors.isEmpty() && RandomDataGenerator.getRandomIntegerWithRange(1, 10) <= 9) {
+            // If there is an advisor, 90% of the time we will set the student to use them
+            AdvisorEntity advisorEntity = advisors.get(RandomDataGenerator.getRandomIntegerWithRange(0, advisors.size() - 1));
+            Advisor advisorJaxb = (Advisor)unmarshall(advisorEntity.getXml(), Advisor.class);
+            logger.log(Level.INFO, "Reusing an advisor instead of making a new one. Using employeeId of {0}.", advisorJaxb.getEmployeeId());
+            student.setAdvisor(advisorJaxb.getEmployeeId());
+        } else {
+            // Create a new advisor and assign it to the Student
+            AdvisorTest advisorTest = new AdvisorTest();
+            Advisor advisor = (Advisor)advisorTest.getRandomObject();
+
+            SQLUtil.insert(new AdvisorEntity(), marshall(advisor));
+
+            logger.log(Level.INFO, "Creating a new advisor for student. Using employeeId of {0}.", advisor.getEmployeeId());
+            student.setAdvisor(advisor.getEmployeeId());
+        }
+
+        return student;
+    }
+
+    public String getXMLFromJAXB() {
+        String result = marshall(getRandomObject()).toString();
         return result;
     }
 
