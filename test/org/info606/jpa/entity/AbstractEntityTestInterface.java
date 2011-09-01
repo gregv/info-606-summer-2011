@@ -28,8 +28,10 @@ public abstract class AbstractEntityTestInterface {
         boolean result = false;
 
         String truncate = System.getenv("truncate");
-        if (truncate != null && truncate.equalsIgnoreCase("yes") || truncate.equalsIgnoreCase("true")) {
-            result = true;
+        if (truncate != null) {
+            if (truncate.equalsIgnoreCase("yes") || truncate.equalsIgnoreCase("true")) {
+                result = true;
+            }
         } else {
             logger.fine("truncate was set to false, not truncating tables");
         }

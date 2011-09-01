@@ -50,8 +50,9 @@
 			<formatter type="plain" usefile="false" />
 			
 			
-			<test name="org.info606.jpa.entity.ScheduleTest" haltonfailure="yes" />
+			
 			<test name="org.info606.jpa.entity.StudentTest" haltonfailure="yes" />
+			<test name="org.info606.jpa.entity.ScheduleTest" haltonfailure="yes" />
 			<test name="org.info606.jpa.entity.AdvisorTest" haltonfailure="yes" />
 			<test name="org.info606.jpa.entity.CourseTest" haltonfailure="yes" />
 			<test name="org.info606.jpa.entity.AdvancedTest" haltonfailure="yes" />

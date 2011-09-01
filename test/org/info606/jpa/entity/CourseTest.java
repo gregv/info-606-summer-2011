@@ -6,6 +6,7 @@ import generated.DayOfWeekType;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.info606.test.util.RandomDataGenerator;
@@ -52,7 +53,7 @@ public class CourseTest extends AbstractEntityTestInterface {
         logger.entering("testOneInsert", null);
     }
 
-    public Object getRandomObject() {
+    private Course getRandomCourse() {
         Course course = new Course();
         String fname = RandomDataGenerator.getRandomFirstname();
         String lname = RandomDataGenerator.getRandomLastname();
@@ -75,6 +76,25 @@ public class CourseTest extends AbstractEntityTestInterface {
         course.setInstructor(fname + " " + lname);
         course.setLocation(RandomDataGenerator.getRandomLocation());
 
+        course.setCourseId(course.getCoursePrefix() + course.getCrn());
+        return course;
+    }
+
+    public Object getRandomObject() {
+        Course course = null;
+
+        int numResults = 0;
+
+        do {
+            course = getRandomCourse();
+            String courseId = course.getCourseId();
+
+            String xpath = "/Course[courseId = \"" + courseId + "\"]";
+            numResults = SQLUtil.searchXmlExistsNode(CourseEntity.class, "xml", xpath).size();
+            logger.log(Level.INFO, "There are {0} courses that have the courseId of {1}.", new Object[] {numResults, courseId});
+        } while (numResults >= 1);
+
+        logger.log(Level.INFO, "Returning course with courseId {0}.", new Object[] {course.getCourseId()});
         return course;
     }
 }
