@@ -2,15 +2,15 @@
 <xs:schema elementFormDefault="qualified"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-
+	
 	<xs:element name="Course">
 		<xs:complexType>
 			<xs:sequence>
 				<!-- Primary Key -->
+				<xs:element name="courseId" type="courseIdType" />
+				
 				<xs:element name="coursePrefix" type="coursePrefixType" />
 				<xs:element name="crn" type="crnType" />
-				
-				
 				<xs:element name="title" type="xs:string" />
 				<xs:element name="instructor" type="xs:string" />
 				<xs:element name="day" type="dayOfWeekType" minOccurs="0" maxOccurs="5" />
@@ -35,7 +35,13 @@
 		</xs:complexType>
 	</xs:element>
 
-
+	<!-- This is a combination of coursePrefix and crn -->
+	<xs:simpleType name="courseIdType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="6"/>
+			<xs:maxLength value="7" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:simpleType name="dayOfWeekType">
 		<xs:restriction base="xs:string">

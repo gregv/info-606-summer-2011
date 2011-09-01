@@ -10,6 +10,9 @@
 				<!-- Primary Key -->
 				<xs:element name="scheduleId" type="scheduleIdType" />
 				
+				<!-- Foreign Key -->
+				<xs:element name="courses" type="courseIdType" minOccurs="1" maxOccurs="unbounded" />
+				
 				<xs:element name="academicYear" type="yearType" />
 				<xs:element name="term" type="termType" />
 			</xs:sequence>

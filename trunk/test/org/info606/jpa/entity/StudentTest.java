@@ -1,6 +1,7 @@
 package org.info606.jpa.entity;
 
 import generated.Advisor;
+import generated.Schedule;
 import generated.Student;
 
 import java.io.File;
@@ -56,6 +57,19 @@ public class StudentTest extends AbstractEntityTestInterface {
         logger.entering("testOneInsert", null);
     }
 
+    private Schedule getRandomSchedule() {
+        boolean coinFlip = (RandomDataGenerator.getRandomIntegerWithRange(1, 10) <= 8);
+        ScheduleTest scheduleTest = new ScheduleTest();
+
+        if (coinFlip) {
+            return scheduleTest.getExistingSchedule();
+        }
+
+        Schedule newSchedule = scheduleTest.getNewRandomSchedule();
+        SQLUtil.insert(new ScheduleEntity(), marshall(newSchedule));
+        return newSchedule;
+    }
+
     public Student getRandomObject() {
         Student student = new Student();
         String fname = RandomDataGenerator.getRandomFirstname();
@@ -64,11 +78,13 @@ public class StudentTest extends AbstractEntityTestInterface {
         student.setName(fname + " " + lname);
         student.setLevel("Graduate");
         student.setProgram(RandomDataGenerator.getRandomProgram());
-        student.setAdmitTerm(RandomDataGenerator.getRandomTerm() + " 2008");
+        student.setAdmitTerm(RandomDataGenerator.getRandomTerm() + " 2004");
         student.setDepartment(null);
         student.setTotalCredits(new BigInteger(RandomDataGenerator.getRandomIntegerWithRange(0, 45) + ""));
         student.setGPA(RandomDataGenerator.getRandomDoubleWithRange(1, 4, 0.2));
         student.setStatus("Active");
+
+        student.getSchedules().add(getRandomSchedule().getScheduleId());
 
         // See if any advisors exist
         List<AdvisorEntity> advisors = (List<AdvisorEntity>)SQLUtil.searchXmlExistsNode(AdvisorEntity.class, "xml", "/Advisor/*");
