@@ -39,17 +39,18 @@ public class ScheduleTest extends AbstractEntityTestInterface {
     @ Ignore
     public void testOneInsert() {
         logger.entering("testOneInsert", null);
-        SQLUtil.insert(1, new ScheduleEntity(), this);
+        SQLUtil.insertRandom(1, new ScheduleEntity(), this);
         List<ScheduleEntity> list = (List<ScheduleEntity>)SQLUtil.searchXmlExistsNode(ScheduleEntity.class, "xml", "//name=\"Janet Lincecum\"");
         logger.entering("testOneInsert", null);
     }
 
-    public String getXMLFromJAXB() {
+    public Object getRandomObject() {
         Schedule schedule = new Schedule();
         schedule.setAcademicYear(2008);
         schedule.setTerm(RandomDataGenerator.getRandomTerm());
-        String result = marshall(schedule).toString();
-        return result;
-    }
 
+        // Add course offerings
+        // schedule.getCourseOfferings().add( )
+        return schedule;
+    }
 }

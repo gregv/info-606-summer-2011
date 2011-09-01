@@ -2,17 +2,25 @@
 <xs:schema elementFormDefault="qualified"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+	<xs:include schemaLocation="Advisor.xsd"  />
+	<xs:include schemaLocation="Schedule.xsd"  />
+
 	<xs:element name="Student">
 		<xs:complexType>
 			<xs:sequence>
+				<!-- Primary Key -->
 				<xs:element name="studentId" type="studentIdType" />
+				
+				<!-- Foreign Keys -->
+				<xs:element name="advisor" type="employeeIdType" />
+				<xs:element name="schedules" type="scheduleIdType" minOccurs="0" maxOccurs="unbounded" />
+
 
 				<xs:element name="name" type="xs:string" />
 				<xs:element name="level" type="xs:string" />
 				<xs:element name="program" type="xs:string" />
 				<xs:element name="admit_term" type="xs:string" />
 				<xs:element name="department" type="xs:string" />
-				<xs:element name="advisor" type="xs:string" />
 				<xs:element name="total_credits" type="xs:positiveInteger" />
 
 
@@ -35,6 +43,7 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+
 
 	<xs:simpleType name="studentIdType">
 		<xs:restriction base="xs:integer">

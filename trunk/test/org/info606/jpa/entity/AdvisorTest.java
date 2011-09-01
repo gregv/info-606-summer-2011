@@ -3,12 +3,8 @@ package org.info606.jpa.entity;
 import generated.Advisor;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.info606.test.util.RandomDataGenerator;
 import org.info606.test.util.SQLUtil;
@@ -47,39 +43,26 @@ public class AdvisorTest extends AbstractEntityTestInterface {
     @ Ignore
     public void testOneInsert() {
         logger.entering("testOneInsert", null);
-        SQLUtil.insert(1, new AdvisorEntity(), this);
+        SQLUtil.insertRandom(1, new AdvisorEntity(), this);
 
         List<AdvisorEntity> list = (List<AdvisorEntity>)SQLUtil.searchXmlExistsNode(AdvisorEntity.class, "xml", "//name=\"Janet Lincecum\"");
 
         logger.entering("testOneInsert", null);
     }
 
-    public String getXMLFromJAXB() {
-
+    public Object getRandomObject() {
         Advisor advisor = new Advisor();
         String fname = RandomDataGenerator.getRandomFirstname();
         String lname = RandomDataGenerator.getRandomLastname();
 
+        advisor.setEmployeeId(RandomDataGenerator.getRandomIntegerWithRange(1000, 999999));
         advisor.setEmail(fname + "." + lname + RandomDataGenerator.getRandomEmailAddressSuffix());
         advisor.setLevel("Junior");
         advisor.setName(fname + " " + lname);
         advisor.setOffice("Room 2182");
         advisor.setPhone(RandomDataGenerator.getRandomPhoneNumber());
 
-        StringWriter sw = new StringWriter();
-        try {
-            JAXBContext jc = JAXBContext.newInstance(advisor.getClass());
-            Marshaller marshaller = jc.createMarshaller();
-
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(advisor, sw);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            return null;
-        }
-
-        String result = sw.toString();
-        logger.fine("-----------------------\n" + result + "\n---------------------");
-        return result;
+        return advisor;
     }
+
 }

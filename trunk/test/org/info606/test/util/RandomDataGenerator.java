@@ -1,5 +1,7 @@
 package org.info606.test.util;
 
+import generated.TermType;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +90,8 @@ public class RandomDataGenerator {
         return building + " " + number;
     }
 
-    public static String getRandomTerm() {
-        String[] prefixes = {"Fall", "Winter", "Spring", "Summer"};
+    public static TermType getRandomTerm() {
+        TermType[] prefixes = {TermType.FALL, TermType.WINTER, TermType.SPRING, TermType.SUMMER};
         return prefixes[ra.nextInt(prefixes.length)];
     }
 

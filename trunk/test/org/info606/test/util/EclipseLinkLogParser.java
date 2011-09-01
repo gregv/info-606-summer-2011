@@ -23,19 +23,13 @@ public class EclipseLinkLogParser {
 
     public void saveAllInsertPerformance(File file, String entityName) {
         logger.entering(CLASS_NAME, "saveAllInsertPerformance");
-        List<String> insertList = new LinkedList<String>();
-        insertList.addAll(Arrays.asList(getAllInsertPerformanceForEntity(entityName).split("\n")));
-
-        FileIO.writeListToFile(file, addNumbersToList(insertList), ",", false);
+        FileIO.writeListToFile(file, addNumbersToList(getAllInsertPerformanceForEntityAsList(entityName)), ",", false);
         logger.entering(CLASS_NAME, "saveAllInsertPerformance");
     }
 
     public void saveAllSelectPerformance(File file, String entityName) {
         logger.entering(CLASS_NAME, "saveAllSelectPerformance");
-        List<String> selectList = new LinkedList<String>();
-        selectList.addAll(Arrays.asList(getAllSelectPerformanceForEntity(entityName).split("\n")));
-
-        FileIO.writeListToFile(file, addNumbersToList(selectList), ",", false);
+        FileIO.writeListToFile(file, addNumbersToList(getAllSelectPerformanceForEntityAsList(entityName)), ",", false);
         logger.exiting(CLASS_NAME, "saveAllSelectPerformance");
     }
 
@@ -45,6 +39,42 @@ public class EclipseLinkLogParser {
         }
 
         return list;
+    }
+
+    public double averageListOfStringsAsIntegers(List<String> in) {
+        int sum = 0;
+        for (String myInt : in) {
+            sum += Integer.parseInt(myInt);
+        }
+        return sum / (1.0 * in.size());
+    }
+
+    public List<Integer> convertStringListToIntegerList(List<String> strList) {
+        List<Integer> intList = new LinkedList<Integer>();
+        for (String myInt : strList) {
+            intList.add(Integer.parseInt(myInt));
+        }
+        return intList;
+    }
+
+    public List<String> getAllInsertPerformanceForEntityAsList(String entityName) {
+        logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", entityName);
+
+        List<String> insertList = new LinkedList<String>();
+        insertList.addAll(Arrays.asList(getAllInsertPerformanceForEntity(entityName).split("\n")));
+
+        logger.exiting(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", insertList.size());
+        return insertList;
+    }
+
+    public List<String> getAllSelectPerformanceForEntityAsList(String entityName) {
+        logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", entityName);
+
+        List<String> selectList = new LinkedList<String>();
+        selectList.addAll(Arrays.asList(getAllSelectPerformanceForEntity(entityName).split("\n")));
+
+        logger.exiting(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", selectList.size());
+        return selectList;
     }
 
     public String getAllSelectPerformanceForEntity(String entityName) {

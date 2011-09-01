@@ -17,7 +17,11 @@ public abstract class AbstractEntityTestInterface {
     private static int                    NUMBER_OF_RECORDS_TO_INSERT = 1;
     private static final String           CLASS_NAME                  = AbstractEntityTestInterface.class.getName();
 
-    public abstract String getXMLFromJAXB();
+    public abstract Object getRandomObject();
+
+    public String getXMLFromJAXB() {
+        return marshall(getRandomObject()).toString();
+    }
 
     public static boolean shouldTruncateTables() {
         logger.entering(CLASS_NAME, "truncateTables");
