@@ -18,6 +18,11 @@ import org.info606.jpa.entity.AbstractEntityTestInterface;
 import org.info606.jpa.entity.AbstractXmlTypeEntity;
 import org.info606.mock.MockEntityManager;
 
+/**
+ * @class INFO 606
+ *        Purpose: Provide utilities for accessing data
+ *        Notes:
+ */
 public class SQLUtil {
 
     private static final String         PERSISTENCE_UNIT_NAME = "myem";
@@ -25,6 +30,12 @@ public class SQLUtil {
     private static Logger               logger                = Logger.getLogger(SQLUtil.class.getName());
     private static String               CLASS_NAME            = SQLUtil.class.getName();
 
+    /**
+     * Method: truncateTable<br/>
+     * Truncate a given table
+     * @param tablename
+     * @return
+     */
     public static int truncateTable(String tablename) {
         logger.entering(CLASS_NAME, "truncateTable");
         EntityManager em = factory.createEntityManager();
@@ -87,6 +98,11 @@ public class SQLUtil {
         return list;
     }
 
+    /**
+     * Method: getAllRowsFromTable<br/>
+     * @param tablename
+     * @return
+     */
     public static Object getAllRowsFromTable(String tablename) {
         EntityManager em = factory.createEntityManager();
 
@@ -95,6 +111,12 @@ public class SQLUtil {
         return q.getResultList();
     }
 
+    /**
+     * Method: insertRandom<br/>
+     * @param numToMake
+     * @param entity
+     * @param testInterface
+     */
     public static void insertRandom(int numToMake, AbstractXmlTypeEntity entity, AbstractEntityTestInterface testInterface) {
         logger.entering("insertRandom", null);
         EntityManager em = getEntityManager();
@@ -108,6 +130,7 @@ public class SQLUtil {
 
             em.persist(entity);
             em.getTransaction().commit();
+
             em.close();
 
             insertCounter++;
@@ -117,6 +140,12 @@ public class SQLUtil {
         logger.exiting("insertRandom", null);
     }
 
+    /**
+     * Method: insert<br/>
+     * Inserts into database
+     * @param entity
+     * @param xml
+     */
     public static void insert(AbstractXmlTypeEntity entity, String xml) {
         logger.entering("insert", null);
         EntityManager em = getEntityManager();
@@ -131,6 +160,12 @@ public class SQLUtil {
         logger.exiting("insert", null);
     }
 
+    /**
+     * Method: getEntityManager<br/>
+     * Returns a real entity manager if there is a connection to the database, otherwise it returns a mock entity
+     * manager so you can still run your tests
+     * @return
+     */
     public static EntityManager getEntityManager() {
         logger.entering("EntityManager", "");
         InetSocketAddress address = new InetSocketAddress("oracledb", 1521);

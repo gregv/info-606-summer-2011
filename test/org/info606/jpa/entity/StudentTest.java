@@ -14,15 +14,23 @@ import org.eclipse.persistence.exceptions.DatabaseException;
 import org.info606.test.util.RandomDataGenerator;
 import org.info606.test.util.SQLUtil;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * @class INFO 606
+ *        Purpose: Test the Student table/entity
+ *        Notes:
+ */
 public class StudentTest extends AbstractEntityTestInterface {
 
     private static final String CLASS_NAME = StudentTest.class.getName();
     private static Logger       logger     = Logger.getLogger(CLASS_NAME);
 
     @ BeforeClass
+    /**
+     * Method: truncateTables<br/>
+     * This will truncate the table if the user's environment variable is set as such
+     */
     public static void truncateTables() {
         if (shouldTruncateTables()) {
             SQLUtil.truncateTable("STUDENT");
@@ -30,6 +38,11 @@ public class StudentTest extends AbstractEntityTestInterface {
     }
 
     @ Test
+    /**
+     * Method: testBunchOfInserts<br/>
+     * This is the only runnable unit test, it performs however many inserts the user wanted as given by the numInsert
+     * environment variable
+     */
     public void testBunchOfInserts() {
         logger.entering("testBunchOfInserts", null);
         int counter = 0;
@@ -49,14 +62,25 @@ public class StudentTest extends AbstractEntityTestInterface {
         logger.exiting("testBunchOfInserts", null);
     }
 
-    @ Ignore
+    /**
+     * Method: testOneInsert<br/>
+     * This method will insert a single random record into the database
+     */
     public void testOneInsert() {
         logger.entering("testOneInsert", null);
         SQLUtil.insertRandom(1, new StudentEntity(), this);
-        List<StudentEntity> list = (List<StudentEntity>)SQLUtil.searchXmlExistsNode(StudentEntity.class, "xml", "//name=\"Janet Lincecum\"");
+        String fname = RandomDataGenerator.getRandomFirstname();
+        String lname = RandomDataGenerator.getRandomLastname();
+
+        List<StudentEntity> list = (List<StudentEntity>)SQLUtil.searchXmlExistsNode(StudentEntity.class, "xml", "/Student[name=\"" + fname + " " + lname + "\"]");
         logger.entering("testOneInsert", null);
     }
 
+    /**
+     * Method: getRandomSchedule<br/>
+     * Returns a random schedule
+     * @return
+     */
     private Schedule getRandomSchedule() {
         boolean coinFlip = (RandomDataGenerator.getRandomIntegerWithRange(1, 10) <= 8);
         ScheduleTest scheduleTest = new ScheduleTest();
@@ -70,6 +94,10 @@ public class StudentTest extends AbstractEntityTestInterface {
         return newSchedule;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.info606.jpa.entity.AbstractEntityTestInterface#getRandomObject()
+     */
     public Student getRandomObject() {
         Student student = new Student();
         String fname = RandomDataGenerator.getRandomFirstname();
@@ -88,7 +116,7 @@ public class StudentTest extends AbstractEntityTestInterface {
 
         // See if any advisors exist
         List<AdvisorEntity> advisors = (List<AdvisorEntity>)SQLUtil.searchXmlExistsNode(AdvisorEntity.class, "xml", "/Advisor/*");
-        if (advisors != null && !advisors.isEmpty() && RandomDataGenerator.getRandomIntegerWithRange(1, 10) <= 9) {
+        if (advisors != null && !advisors.isEmpty() && RandomDataGenerator.getRandomIntegerWithRange(0, 10) <= 9) {
             // If there is an advisor, 90% of the time we will set the student to use them
             AdvisorEntity advisorEntity = advisors.get(RandomDataGenerator.getRandomIntegerWithRange(0, advisors.size() - 1));
             Advisor advisorJaxb = (Advisor)unmarshall(advisorEntity.getXml(), Advisor.class);
@@ -108,6 +136,10 @@ public class StudentTest extends AbstractEntityTestInterface {
         return student;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.info606.jpa.entity.AbstractEntityTestInterface#getXMLFromJAXB()
+     */
     public String getXMLFromJAXB() {
         String result = marshall(getRandomObject()).toString();
         return result;
