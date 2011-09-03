@@ -10,6 +10,11 @@ import java.util.regex.Pattern;
 
 import org.info606.util.io.FileIO;
 
+/**
+ * @class INFO 606
+ *        Purpose: Provide utility methods to extract metadata from the EclipseLink log
+ *        Notes:
+ */
 public class EclipseLinkLogParser {
 
     private static final String CLASS_NAME = EclipseLinkLogParser.class.getName();
@@ -17,22 +22,42 @@ public class EclipseLinkLogParser {
 
     private String              filename;
 
+    /**
+     * @param filename - the eclipselink filename to parse
+     */
     public EclipseLinkLogParser(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Method: saveAllInsertPerformance<br/>
+     * Save all insert performance
+     * @param file The filename you want to save as
+     * @param entityName The name of the entity you want statistics for
+     */
     public void saveAllInsertPerformance(File file, String entityName) {
         logger.entering(CLASS_NAME, "saveAllInsertPerformance");
         FileIO.writeListToFile(file, addNumbersToList(getAllInsertPerformanceForEntityAsList(entityName)), ",", false);
         logger.entering(CLASS_NAME, "saveAllInsertPerformance");
     }
 
+    /**
+     * Method: saveAllSelectPerformance<br/>
+     * @param file The filename you want to save as
+     * @param entityName The name of the entity you want statistics for
+     */
     public void saveAllSelectPerformance(File file, String entityName) {
         logger.entering(CLASS_NAME, "saveAllSelectPerformance");
         FileIO.writeListToFile(file, addNumbersToList(getAllSelectPerformanceForEntityAsList(entityName)), ",", false);
         logger.exiting(CLASS_NAME, "saveAllSelectPerformance");
     }
 
+    /**
+     * Method: addNumbersToList<br/>
+     * Add a numbering scheme to a list
+     * @param list
+     * @return
+     */
     private List<String> addNumbersToList(List<String> list) {
         for (int i = 0; i < list.size(); i++) {
             list.set(i, i + 1 + ", " + list.get(i));
@@ -41,6 +66,12 @@ public class EclipseLinkLogParser {
         return list;
     }
 
+    /**
+     * Method: averageListOfStringsAsIntegers<br/>
+     * Get the average of a list of integers
+     * @param in
+     * @return
+     */
     public double averageListOfStringsAsIntegers(List<String> in) {
         int sum = 0;
         for (String myInt : in) {
@@ -49,6 +80,12 @@ public class EclipseLinkLogParser {
         return sum / (1.0 * in.size());
     }
 
+    /**
+     * Method: convertStringListToIntegerList<br/>
+     * Maintaining order, convert a list of strings to a list of integers
+     * @param strList
+     * @return
+     */
     public List<Integer> convertStringListToIntegerList(List<String> strList) {
         List<Integer> intList = new LinkedList<Integer>();
         for (String myInt : strList) {
@@ -57,6 +94,12 @@ public class EclipseLinkLogParser {
         return intList;
     }
 
+    /**
+     * Method: getAllInsertPerformanceForEntityAsList<br/>
+     * Parse through the EclipseLink log to get performance for inserts, return a list of performance values
+     * @param entityName
+     * @return
+     */
     public List<String> getAllInsertPerformanceForEntityAsList(String entityName) {
         logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", entityName);
 
@@ -67,6 +110,12 @@ public class EclipseLinkLogParser {
         return insertList;
     }
 
+    /**
+     * Method: getAllSelectPerformanceForEntityAsList<br/>
+     * Parse through the EclipseLink log to get performance for selects, return a list of performance values
+     * @param entityName
+     * @return
+     */
     public List<String> getAllSelectPerformanceForEntityAsList(String entityName) {
         logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntityAsList", entityName);
 
@@ -77,6 +126,12 @@ public class EclipseLinkLogParser {
         return selectList;
     }
 
+    /**
+     * Method: getAllSelectPerformanceForEntity<br/>
+     * Parse through the EclipseLink log to get performance for selects
+     * @param entityName
+     * @return
+     */
     public String getAllSelectPerformanceForEntity(String entityName) {
         logger.entering(CLASS_NAME, "getAllSelectPerformanceForEntity", entityName);
         String regex = "ReadAllQuery\\(referenceClass=" + entityName + ".*?total time=(\\d{1,30})";
@@ -84,11 +139,23 @@ public class EclipseLinkLogParser {
         return match(regex);
     }
 
+    /**
+     * Method: getAllInsertPerformanceForEntity<br/>
+     * Parse through the EclipseLink log to get all performance for a given entity
+     * @param entityName
+     * @return
+     */
     public String getAllInsertPerformanceForEntity(String entityName) {
         String regex = "InsertObjectQuery.*?total time=(\\d{1,30})";
         return match(regex);
     }
 
+    /**
+     * Method: match<br/>
+     * Do regular expression searching on the eclipselink filename
+     * @param regularExpression
+     * @return
+     */
     public String match(String regularExpression) {
         logger.entering(CLASS_NAME, "match", regularExpression);
         Pattern pattern = Pattern.compile(regularExpression, Pattern.MULTILINE);
