@@ -8,7 +8,7 @@
 			<xs:sequence>
 				<!-- Primary Key -->
 				<xs:element name="courseId" type="courseIdType" />
-				
+				<xs:element name="rating" type="ratingType" minOccurs="0" />
 				<xs:element name="coursePrefix" type="coursePrefixType" />
 				<xs:element name="crn" type="crnType" />
 				<xs:element name="title" type="xs:string" />
@@ -35,6 +35,13 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:simpleType name="ratingType">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<!-- This is a combination of coursePrefix and crn -->
 	<xs:simpleType name="courseIdType">
 		<xs:restriction base="xs:string">
