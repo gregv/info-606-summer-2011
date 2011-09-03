@@ -49,6 +49,12 @@ ALTER TABLE Advisor ADD CONSTRAINT advisor_pk UNIQUE (XMLDATA."employeeId");
 ------------------------------------------------------------------------------------------------------------
 -- COURSE
 --
+
+ 
+ DROP TABLE Course cascade constraints purge;
+
+
+ -- STRUCTURED XML
  BEGIN
        dbms_xmlschema.deleteSchema
                -- ( schemaurl =>  'http://www.info606.org/course/Course.xsd'
@@ -69,17 +75,22 @@ dbms_xmlschema.registeruri('Course.xsd', '/public/Course.xsd',
  end;
  /
  
-DROP TABLE Course cascade constraints purge;
-
 CREATE TABLE Course of XMLTYPE
- --XMLSCHEMA "http://www.info606.org/course/Course.xsd"
  XMLSCHEMA "Course.xsd"
   ELEMENT "Course";
-
+--
+  
+  
 ALTER TABLE Course DROP CONSTRAINT course_pk;
 ALTER TABLE Course ADD CONSTRAINT course_pk UNIQUE (XMLDATA."courseId" );
 
-
+drop index course_instructor_inx;
+create index course_instructor_inx on Course(extractValue(object_value,'//instructor') );
+ 
+drop index course_textindex_ix;
+-- CREATE INDEX course_textindex_ix ON Course (OBJECT_VALUE) INDEXTYPE IS CTXSYS.CONTEXT PARAMETERS('SYNC(EVERY "SYSDATE+1/24")');
+CREATE INDEX course_textindex_ix ON Course (OBJECT_VALUE) INDEXTYPE IS CTXSYS.CONTEXT PARAMETERS('SYNC(ON COMMIT)');
+ 
 
 ------------------------------------------------------------------------------------------------------------
 --
