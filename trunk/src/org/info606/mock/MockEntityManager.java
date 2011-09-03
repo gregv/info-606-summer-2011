@@ -28,6 +28,11 @@ import org.eclipse.persistence.sessions.UnitOfWork;
 import org.eclipse.persistence.sessions.broker.SessionBroker;
 import org.eclipse.persistence.sessions.server.ServerSession;
 
+/**
+ * @class INFO 606
+ *        Purpose: Provides a mock entity manager
+ *        Notes:
+ */
 public class MockEntityManager implements JpaEntityManager {
     private static Logger logger = Logger.getLogger(MockEntityManager.class.getName());
 

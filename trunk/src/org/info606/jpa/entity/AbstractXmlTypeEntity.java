@@ -4,6 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * @class INFO606
+ *        Purpose: Provides everything the concrete entities need
+ *        Notes:
+ */
 @ MappedSuperclass
 public abstract class AbstractXmlTypeEntity {
 
